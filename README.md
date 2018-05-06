@@ -71,7 +71,6 @@ The suggested modification is necessary for the online file sharing scenario bec
 ### Installation
 
 ```
-sudo apt-get install build-essential
 npm install
 npm install -g truffle
 ```
@@ -104,7 +103,3 @@ See also the list of [contributors](https://github.com/aaronchong888/Project-D3/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Acknowledgments
-
-*- To be updated -*
