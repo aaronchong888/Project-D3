@@ -12,8 +12,6 @@ This project aims to present a new data distribution model that focuses on prese
 
 The online file sharing platform - [D3](https://project-d3.xyz) was built with [Ethereum](https://www.ethereum.org/) and [IPFS](https://ipfs.io/). It aims to provide a better data exchange model with the decentralization benefits of a blockchain system. In addition, D3 offers a solution for practical blockchain application usage by enabling traditional web users to seamlessly migrate to the new platform.
 
-<br>
-
 ### Overview
 
 <p align="center"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/overview.png" width="40%"></p>
@@ -61,19 +59,37 @@ The suggested modification is necessary for the online file sharing scenario bec
 
 ## Getting Started
 
-*- To be updated -*
-
 ### Prerequisites
 
-*- To be updated -*
+- Node.js
+- npm (Node.js package manager)
+- Ethereum *
+- IPFS *
 
-### Installing
+> \* Required only if you are running your own local Ethereum & IPFS nodes
 
-*- To be updated -*
+### Installation
 
-## Deployment
+```
+sudo apt-get install build-essential
+npm install
+npm install -g truffle
+```
 
-*- To be updated -*
+### Deployment
+
+```
+truffle compile
+truffle migrate (--network infura)
+```
+
+### Usage
+
+Check `app.js` and complete the missing parts (*API Keys*, *RSA key pairs*, *SSL certificates*, etc.) before running
+
+```
+npm start
+```
 
 ## Built With
 
