@@ -1,5 +1,4 @@
 # Project-D3
------------------------
 
 <a href="https://project-d3.xyz"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3_icon_blk.png" align="left" height="30" width="30"></a>
 
@@ -13,7 +12,7 @@ The online file sharing platform - [D3](https://project-d3.xyz) was built with [
 
 ### Overview
 
-<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/overview.png" align="center" width="40%">
+<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/overview.png" width="40%">
 
 - **Owners**: share data and have the right to control who can query the data
 - **Recipients**: query data from the system
@@ -22,13 +21,13 @@ The online file sharing platform - [D3](https://project-d3.xyz) was built with [
 
 #### Data Sharing 
 
-<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/sharing.png" align="center" width="40%">
+<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/sharing.png" width="40%">
 
 Owners start the sharing process by putting their data on IPFS to obtain an IPFS file hash. Then the owner queries the smart contract for the public keys of the verified workers, and fetches the corresponding IPFS objects to the local node. The file hash is split into *n* shares using Shamir’s Secret Sharing scheme, and *n* random keys (if *n* is less than the total number of workers) are chosen by the owner to encrypt the shares. Finally, the owner can safely store all the encrypted shares on the blockchain through a transaction, together with all the necessary information such as specifying the target recipients.
 
 #### Data Retrieval
 
-<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/retrieval.png" align="center" width="70%">
+<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/retrieval.png" width="60%">
 
 Upon receiving requests from a recipient, the workers have to first verify the identity of the recipient (e.g. using RSA signatures). Then the workers proceed to query the smart contract for all the encrypted shares on behalf of the recipient. If the recipient is not authorized to get the file, the transaction would be rejected by the smart contract automatically and the workers shall ignore the request. Otherwise, they would try to decrypt the *n* shares with their respective private keys, and to return the decrypted share to the recipient. Notice that it is possible for a particular worker to return no result if its public key is not chosen during the data sharing phase. After receiving *t* decrypted shares (only *t* out of *n* shares are required as in SSS), the recipient would then be able to reconstruct the original IPFS file hash, retrieving the data back through its local IPFS node.
 
@@ -36,7 +35,7 @@ Upon receiving requests from a recipient, the workers have to first verify the i
 
 To facilitate the use cases for online file sharing and to provide comprehensive access control features to the data owners, the use of an additional file meta is introduced on top of the original design.
 
-<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/modified.png" align="center" width="50%">
+<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/modified.png" width="70%">
 
 Instead of splitting the IPFS hash to the original data, a file meta data is created to include the following information: *filename*, *size*, *type*, *creation date*, *owner*, *description*, and *IPFS hash* to the original file. In case of private encrypted uploads, *recipients* and the symmetric encryption *passphrase* are also added to the file meta.
 
@@ -44,7 +43,7 @@ The suggested modification is necessary for the online file sharing scenario bec
 
 ### System Architecture
 
-![sysarch](https://github.com/aaronchong888/Project-D3/blob/master/img/sysarch.png)
+<img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/sysarch.png" width="50%">
 
 ## Getting Started
 
