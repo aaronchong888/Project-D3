@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html ng-app="mainApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>D3 - Decentralized File Sharing</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#40d5ff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/angular-block-ui.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/header-blue.css" rel="stylesheet" type="text/css">
+  <link href="/css/dropify.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/loaders.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/custom.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
+  <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+  <script src="https://unpkg.com/ipfs-api@19.0.0/dist/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+  <script src="/js/angular-block-ui.min.js"></script>
+  <script src="/js/dropify.min.js"></script>
+  <script src="/js/bootpopup.min.js"></script>
+  <script src="/js/angularjs-social-login.js"></script>
+  <script src="/js/angular-socialshare.min.js"></script>
+  <script src="/js/secrets.min.js"></script>
+  <script src="/js/node-rsa.min.js"></script>
+  <script src="/js/web3.min.js"></script>
+  <script src="/js/core.js"></script>
+</head>
+
+<body ng-controller="mainController" ng-init="initIndex()">
+  <div class="header-blue">
+	<nav class="navbar navbar-default navigation-clean-search">
+	<div class="container">
+		<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><img alt="" src="/image/d3_icon.png"></a>
+			<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+				<span class="icon-bar"></span><span class="icon-bar"></span></button>
+		</div>
+		<div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+			    <li role="presentation"><a href="/about">About</a></li>
+                            <li class="active" role="presentation"><a href="/">Upload</a></li>
+			    <li role="presentation"><a href="/download">Download</a></li>
+			    <li role="presentation"><a href="/view">Browse</a></li>
+			    <li role="presentation" ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			    <li role="presentation"><a href="/contact">Contact</a></li>
+                        </ul>
+                        <p ng-show="!isLoggedIn" class="navbar-text navbar-right"><a class="btn btn-default action-button" role="button" href="/login">Login</a></p>
+			<p ng-show="isLoggedIn" class="navbar-text navbar-right" style="margin-top: 15px !important;"><img class="user-icon" alt="" ng-src="{{userPhoto}}"><a style="color: white;" href="/login">{{userName}}</a></p>
+		</div>
+	</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+		    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 small-screen-col">
+
+			<div class="panel">
+				<div class="panel-body">
+				<form name="uploadForm" id="publicForm">
+				     <h1>File Upload</h1>
+				     <!-- BROWSE -->
+				     <div class="form-group" style="margin-top: 20px;">
+					<input type="file" class="dropify" id="uploadFile" files-input ng-model="pubFile" name="data" required ng-blur="uploadForm.data.$validate()" data-height="150" data-max-file-size="500M" data-max-file-size-preview="10M">
+					<div class="checkbox" style="margin-top: 15px; margin-bottom: 30px;" ng-show="!isPrivateUpload">
+						<label style="padding-left: 0px;">
+						<input type="checkbox" value="" ng-model="hiddenChecked">
+						<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span> Add to Public File Archive for all visitors to download </label>
+					</div>
+				     </div>
+				     <!-- DESCRIPTION -->
+				     <div class="form-group">
+					<label class="control-label"> Description:</label>
+					<textarea class="form-control" ng-model="descriptionText" placeholder="( Optional )" ng-maxlength="255" onkeyup="charLimit(this, 255)"></textarea>
+				     </div>
+				     <!-- UPLOADER EMAIL -->
+				     <div ng-show="!isLoggedIn || isWeb3" class="form-group">
+					<label class="control-label"> Your email:</label>
+					<input type="text" class="form-control" ng-model="uploaderEmail" placeholder="( Optional )">
+				     </div>
+				     <!-- TOGGLE -->
+				     <hr>
+				     <div class="form-group">
+					<div class="row" style="margin-top: 30px; margin-right: 0px; margin-left: 0px;">
+						<div class="col-md-3" style="margin-top: 4px; margin-bottom: 10px; padding-left: 5px;">
+							<i class="glyphicon glyphicon-lock"></i> <strong>Encrypted Upload</strong>
+						</div>
+						<div class="col-md-3">
+							<label class="switch">
+							  <input type="checkbox" ng-model="isPrivateUpload"><span class="slider round"></span>
+							</label>
+						</div>
+					</div>
+				     </div>
+					<div ng-show="isPrivateUpload">
+					     <!-- RECIPIENTS -->
+					     <div class="form-group">
+						<label class="control-label"> Recipients:</label>
+						<div class="input-group control-group after-add-more">
+							<input type="text" name="recipientAddr[]" class="form-control" placeholder="( Ethereum OR email address )" id="recipientAddr">
+							<div class="input-group-btn">
+								<button class="btn btn-success add-more" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+							</div>
+						</div>
+
+						<div class="copy-fields hide">
+							<div class="control-group input-group" style="margin-top:10px">
+								<input type="text" name="recipientAddr[]" class="form-control" placeholder="( Ethereum OR email address )">
+						    		<div class="input-group-btn"> 
+						      			<button class="btn btn-danger remove" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+								</div>
+							</div>
+						</div>
+					     </div>
+					</div>
+				     <hr>
+				     <!-- SUBMIT -->
+				     <div class="col-sm-12 text-center" style="margin-bottom: 20px;">
+					<p> By uploading, you agree with the <a class="link" href="/terms">Terms of Service</a>. </p>
+					<button class="btn btn-info btn-lg" type="submit" ng-disabled="!uploadForm.$valid" ng-click="validateUpload()" style="margin-top: 10px;">
+				       		<i class="glyphicon glyphicon-upload"></i> Upload
+				     	</button>
+				     </div>
+				</form>
+				</div>
+			</div>
+		    </div>
+                </div>
+	</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fixed-bottom">
+    <div class="container">
+	<div class="row text-center">   
+		<ul class="menu list-inline">
+			<li><a href="/about">About</a></li>
+			<li><a href="/">Upload</a></li>
+			<li><a href="/download">Download</a></li>
+			<li><a href="/view">Browse</a></li>
+			<li ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			<li><a href="/contact">Contact</a></li>
+			<li><a href="/terms">Terms of Service</a></li>
+		</ul>
+	</div>
+    </div>
+  </footer>
+  
+</body>
+
+</html>
+

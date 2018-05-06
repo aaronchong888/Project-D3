@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html ng-app="mainApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>D3 - Decentralized File Sharing</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#40d5ff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/angular-block-ui.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/header-blue.css" rel="stylesheet" type="text/css">
+  <link href="/css/dropify.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/loaders.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/custom.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
+  <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+  <script src="https://unpkg.com/ipfs-api@19.0.0/dist/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+  <script src="/js/angular-block-ui.min.js"></script>
+  <script src="/js/dropify.min.js"></script>
+  <script src="/js/bootpopup.min.js"></script>
+  <script src="/js/angularjs-social-login.js"></script>
+  <script src="/js/angular-socialshare.min.js"></script>
+  <script src="/js/secrets.min.js"></script>
+  <script src="/js/node-rsa.min.js"></script>
+  <script src="/js/web3.min.js"></script>
+  <script src="/js/core.js"></script>
+</head>
+
+<body ng-controller="mainController" ng-init="initManage()">
+  <div class="header-blue">
+	<nav class="navbar navbar-default navigation-clean-search">
+	<div class="container">
+		<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><img alt="" src="/image/d3_icon.png"></a>
+			<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+				<span class="icon-bar"></span><span class="icon-bar"></span></button>
+		</div>
+		<div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+			    <li role="presentation"><a href="/about">About</a></li>
+                            <li role="presentation"><a href="/">Upload</a></li>
+			    <li role="presentation"><a href="/download">Download</a></li>
+			    <li role="presentation"><a href="/view">Browse</a></li>
+			    <li class="active" role="presentation" ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			    <li role="presentation"><a href="/contact">Contact</a></li>
+                        </ul>
+                        <p ng-show="!isLoggedIn" class="navbar-text navbar-right"><a class="btn btn-default action-button" role="button" href="/login">Login</a></p>
+			<p ng-show="isLoggedIn" class="navbar-text navbar-right" style="margin-top: 15px !important;"><img class="user-icon" alt="" ng-src="{{userPhoto}}"><a style="color: white;" href="/login">{{userName}}</a></p>
+		</div>
+	</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+		    <div class="col-lg-12 small-screen-col">
+			<div class="panel login-panel">
+				<div class="panel-body">
+					<div ng-show="!isLoggedIn">
+						<div class="col-sm-12 text-center">
+						    <h1>Sign in to verify your email address</h1>
+						    <div class="row">
+							    <div class="social-btns">
+								<a fb-login class="btn facebook"><i class="fa fa-facebook"></i></a>
+								<a g-login class="btn google"><i class="fa fa-google"></i></a>
+							    </div>
+						    </div>
+						</div>
+				    	</div>
+					<div ng-show="isLoggedIn">
+
+    <h1>Manage Public Files</h1>
+    <br><br>
+    <div class="table-responsive" id="no-more-tables">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Last Modified</th>
+	  <th style="text-align: center;">Download</th>
+	  <th style="text-align: center;">Share</th>
+	  <th></th>
+	  <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="x in pubfiles">
+          <td data-title="Filename"><i class="glyphicon glyphicon-info-sign" ng-click="showSelfInfo(x)" style="margin-right: 8px;"></i>{{ x.filename }}</td>
+          <td data-title="Last Modified">{{ x.modified * 1000 | date: "dd MMM yyyy HH:mm:ss" }}</td>
+	  <td data-title="Download" class="td-center"><button class="btn btn-primary btn-sm" ng-disabled="x.deleted" ng-click="downloadFile(x)"><i class="glyphicon glyphicon-download-alt"></i></button></td>
+	  <td data-title="Share" class="td-center"><button class="btn btn-info btn-sm" ng-disabled="x.deleted || !x.visible" ng-click="shareFile(x)"><i class="glyphicon glyphicon-link"></i></button></td>
+	  <td data-title="Hide/Unhide" class="td-center"><div class="btn-group">
+		<button class="btn btn-warning btn-sm" ng-disabled="x.deleted || x.disabled || !x.visible" ng-click="changeHidden(x)"><i class="glyphicon glyphicon-eye-close"></i> Hide </button>
+		<button class="btn btn-warning btn-sm" ng-disabled="x.deleted || x.disabled || x.visible" ng-click="changeHidden(x)"><i class="glyphicon glyphicon-eye-open"></i> Unhide </button>
+		</div></td>
+	  <td data-title="Delete" class="td-center"><button class="btn btn-danger btn-sm" ng-disabled="x.deleted" ng-click="deleteFile(x)"><i class="glyphicon glyphicon-trash"></i> Delete </button></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <hr><br>
+
+    <h1>Manage Private Files</h1>
+    <br><br>
+    <div class="table-responsive" id="no-more-tables">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Last Modified</th>
+	  <th>Recipients</th>
+	  <th></th>
+	  <th style="text-align: center;">Download</th>
+	  <th style="text-align: center;">Share</th>
+	  <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="y in pfiles">
+          <td data-title="Filename"><i class="glyphicon glyphicon-info-sign" ng-click="showSelfInfo(y)" style="margin-right: 8px;"></i>{{ y.filename }}</td>
+          <td data-title="Last Modified">{{ y.modified * 1000 | date: "dd MMM yyyy HH:mm:ss" }}</td>
+	  <td data-title="Recipients">
+		<div class="input-group" ng-repeat="z in y.recipients" style="margin-bottom: 10px;">
+			<input type="text" class="form-control" value="{{z}}" readonly>
+			<div class="input-group-btn"><button class="btn btn-primary" ng-disabled="y.deleted || y.disabled" ng-click="removeRecipient(y, z)"><i class="glyphicon glyphicon-minus"></i></button></div>
+		</div>
+	  </td>
+	  <td data-title="Add Recipient"><button class="btn btn-primary btn-sm" ng-disabled="y.deleted || y.disabled" ng-click="addRecipient(y)"><i class="glyphicon glyphicon-plus"></i></button></td>
+	  <td data-title="Download" class="td-center"><button class="btn btn-primary btn-sm" ng-disabled="y.deleted" ng-click="downloadFile(y)"><i class="glyphicon glyphicon-download-alt"></i></button></td>
+	  <td data-title="Share" class="td-center"><button class="btn btn-info btn-sm" ng-disabled="y.deleted" ng-click="sharePrivateFile(y)"><i class="glyphicon glyphicon-link"></i></button></td>
+	  <td data-title="Delete" class="td-center"><button class="btn btn-danger btn-sm" ng-disabled="y.deleted" ng-click="deleteFile(y)"><i class="glyphicon glyphicon-trash"></i> Delete </button></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+     <div ng-show="isAdmin" class="col-sm-12 text-center" style="margin-bottom: 30px;margin-top: 40px;">
+	<a class="btn btn-info btn-lg" href="/admin" style="margin-top: 10px;"> View Logs </a>
+     </div>
+<br><br>
+<a id="download"></a>
+					</div>
+				</div>
+			</div>
+		    </div>
+                </div>
+	</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fixed-bottom">
+    <div class="container">
+	<div class="row text-center">   
+		<ul class="menu list-inline">
+			<li><a href="/about">About</a></li>
+			<li><a href="/">Upload</a></li>
+			<li><a href="/download">Download</a></li>
+			<li><a href="/view">Browse</a></li>
+			<li ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			<li><a href="/contact">Contact</a></li>
+			<li><a href="/terms">Terms of Service</a></li>
+		</ul>
+	</div>
+    </div>
+  </footer>
+  
+</body>
+
+</html>
+

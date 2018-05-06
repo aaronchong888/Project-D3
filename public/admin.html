@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html ng-app="mainApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>D3 - Decentralized File Sharing</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#40d5ff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/angular-block-ui.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/header-blue.css" rel="stylesheet" type="text/css">
+  <link href="/css/dropify.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/loaders.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/custom.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
+  <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+  <script src="https://unpkg.com/ipfs-api@19.0.0/dist/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+  <script src="/js/angular-block-ui.min.js"></script>
+  <script src="/js/dropify.min.js"></script>
+  <script src="/js/bootpopup.min.js"></script>
+  <script src="/js/angularjs-social-login.js"></script>
+  <script src="/js/angular-socialshare.min.js"></script>
+  <script src="/js/secrets.min.js"></script>
+  <script src="/js/node-rsa.min.js"></script>
+  <script src="/js/web3.min.js"></script>
+  <script src="/js/core.js"></script>
+</head>
+
+<body ng-controller="mainController" ng-init="initAdmin()">
+  <div class="header-blue">
+	<nav class="navbar navbar-default navigation-clean-search">
+	<div class="container">
+		<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><img alt="" src="/image/d3_icon.png"></a>
+			<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+				<span class="icon-bar"></span><span class="icon-bar"></span></button>
+		</div>
+		<div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+			    <li role="presentation"><a href="/about">About</a></li>
+                            <li role="presentation"><a href="/">Upload</a></li>
+			    <li role="presentation"><a href="/download">Download</a></li>
+			    <li role="presentation"><a href="/view">Browse</a></li>
+			    <li role="presentation" ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			    <li role="presentation"><a href="/contact">Contact</a></li>
+                        </ul>
+                        <p ng-show="!isLoggedIn" class="navbar-text navbar-right"><a class="btn btn-default action-button" role="button" href="/login">Login</a></p>
+			<p ng-show="isLoggedIn" class="navbar-text navbar-right" style="margin-top: 15px !important;"><img class="user-icon" alt="" ng-src="{{userPhoto}}"><a style="color: white;" href="/login">{{userName}}</a></p>
+		</div>
+	</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+		    <div class="col-lg-12 small-screen-col">
+			<div class="panel login-panel">
+				<div class="panel-body">
+					<div ng-show="!isAdmin">
+						<div class="col-sm-12 text-center" style="font-size: 16px; color: white; margin-top: 20vh; margin-bottom: 15vh;">
+							<h1>Error</h1>
+							<div class="icon">
+								<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 36px;margin-top: 20px;"></i>
+							</div>
+							<h2> Access Denied
+							</h2>
+							<p>You are not authorized to view this page.</p>
+						</div>
+				    	</div>
+					<div ng-show="isAdmin">
+
+    <h1>File Report Logs</h1>
+    <br><br>
+    <div class="row">
+	<div class="col-md-1">
+		<label style="font-size: 18px;margin-top: 5px;">Search:</label>
+	</div>
+	<div class="col-md-4">
+		<input class="form-control input-sm" type="text" ng-model="searchViewAdmin" style="margin-top: 2px;">
+	</div>
+	<div class="col-md-2 col-md-offset-2">
+		<label style="font-size: 18px;margin-top: 5px;">Sorted By:</label>
+	</div>
+	<div class="col-md-3">
+		<select ng-model="selectedSort" ng-change="updateAdminView(selectedSort)" style="color: black; width: 100%; margin-top: 4px;">
+			<option>timestamp</option>
+			<option>id</option>
+			<option>sender</option>
+			<option>total</option>
+		</select>
+	</div>
+    </div>
+    <br><br>
+
+    <div class="table-responsive" id="no-more-tables">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>File ID</th>
+	  <th>Reported By</th>
+	  <th style="text-align: center;"># of Reports</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="x in reportLogs | filter: searchViewAdmin">
+          <td data-title="Timestamp">{{ x.timestamp * 1000 | date: "dd MMM yyyy HH:mm:ss" }}</td>
+          <td data-title="File ID">{{ x.id }}</td>
+	  <td data-title="Reported By">{{ x.sender }}</td>
+	  <td data-title="# of Reports" class="td-center">{{ x.total }}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <hr><br>
+
+    <h1>Blacklist Logs</h1>
+    <br>
+    <form class="form-horizontal" name="adminForm" id="adminForm">
+     <!-- INDEX -->
+     <div class="form-group">
+	<label class="control-label col-sm-2"> Blacklist User:</label>
+	<div class="col-sm-8">
+        	<input type="text" class="form-control" ng-model="blacklistUser" placeholder="( User Address )" required>
+	</div>
+     <!-- SUBMIT -->
+	<div class="col-sm-2">
+		<button class="btn btn-info" type="submit" ng-disabled="!adminForm.$valid" ng-click="setBlacklist()" style="padding-left: 20px; padding-right: 20px;"> Submit </button>
+	</div>
+     </div>
+    </form>
+    <br><br>
+    <div class="table-responsive" id="no-more-tables">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+	  <th>User</th>
+	  <th style="text-align: center;">Status</th>
+	  <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="y in blacklistLogs">
+          <td data-title="Timestamp">{{ y.timestamp * 1000 | date: "dd MMM yyyy HH:mm:ss" }}</td>
+          <td data-title="User">{{ y.target }}</td>
+	  <td data-title="Status" class="td-center">{{ y.status }}</td>
+	  <td data-title="Unblock" class="td-center"><button class="btn btn-warning btn-sm" ng-disabled="y.status == 'false'" ng-click="setUnblock(y.target)" style="padding: 0px 10px;"><i class="glyphicon glyphicon-remove-circle"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+     <div class="col-sm-12 text-center" style="margin-bottom: 30px;margin-top: 40px;">
+	<a class="btn btn-info btn-lg" href="/manage" style="margin-top: 10px;"> Back </a>
+     </div>
+<br><br>
+					</div>
+				</div>
+			</div>
+		    </div>
+                </div>
+	</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fixed-bottom">
+    <div class="container">
+	<div class="row text-center">   
+		<ul class="menu list-inline">
+			<li><a href="/about">About</a></li>
+			<li><a href="/">Upload</a></li>
+			<li><a href="/download">Download</a></li>
+			<li><a href="/view">Browse</a></li>
+			<li ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			<li><a href="/contact">Contact</a></li>
+			<li><a href="/terms">Terms of Service</a></li>
+		</ul>
+	</div>
+    </div>
+  </footer>
+  
+</body>
+
+</html>
+

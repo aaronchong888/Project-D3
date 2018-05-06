@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html ng-app="mainApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>D3 - Decentralized File Sharing</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#40d5ff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/angular-block-ui.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/header-blue.css" rel="stylesheet" type="text/css">
+  <link href="/css/dropify.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/loaders.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/custom.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
+  <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+  <script src="https://unpkg.com/ipfs-api@19.0.0/dist/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+  <script src="/js/angular-block-ui.min.js"></script>
+  <script src="/js/dropify.min.js"></script>
+  <script src="/js/bootpopup.min.js"></script>
+  <script src="/js/angularjs-social-login.js"></script>
+  <script src="/js/angular-socialshare.min.js"></script>
+  <script src="/js/secrets.min.js"></script>
+  <script src="/js/node-rsa.min.js"></script>
+  <script src="/js/web3.min.js"></script>
+  <script src="/js/core.js"></script>
+</head>
+
+<body ng-controller="mainController">
+  <div class="header-blue">
+	<nav class="navbar navbar-default navigation-clean-search">
+	<div class="container">
+		<div class="navbar-header"><a class="navbar-brand navbar-link" href="/"><img alt="" src="/image/d3_icon.png"></a>
+			<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+				<span class="icon-bar"></span><span class="icon-bar"></span></button>
+		</div>
+		<div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+			    <li role="presentation"><a href="/about">About</a></li>
+                            <li role="presentation"><a href="/">Upload</a></li>
+			    <li role="presentation"><a href="/download">Download</a></li>
+			    <li role="presentation"><a href="/view">Browse</a></li>
+			    <li role="presentation" ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			    <li role="presentation"><a href="/contact">Contact</a></li>
+                        </ul>
+                        <p ng-show="!isLoggedIn" class="navbar-text navbar-right"><a class="btn btn-default action-button" role="button" href="/login">Login</a></p>
+			<p ng-show="isLoggedIn" class="navbar-text navbar-right" style="margin-top: 15px !important;"><img class="user-icon" alt="" ng-src="{{userPhoto}}"><a style="color: white;" href="/login">{{userName}}</a></p>
+		</div>
+	</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+		    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 small-screen-col">
+			<div class="panel login-panel">
+				<div class="panel-body">
+				    <div ng-show="!isLoggedIn">
+					<div class="col-sm-12 text-center">
+					    <h1>Sign in with Facebook or Google</h1>
+					    <div class="row">
+						    <div class="social-btns">
+							<a fb-login class="btn facebook"><i class="fa fa-facebook"></i></a>
+							<a g-login class="btn google"><i class="fa fa-google"></i></a>
+						    </div>
+					    </div>
+					</div>
+				    </div>
+				    <div ng-show="isLoggedIn">
+					<div class="card hovercard">
+						<div class="cardheader">
+						</div>
+						<div class="avatar">
+						    <img alt="" ng-src="{{userPhoto}}">
+						</div>
+						<div class="info">
+						    <div class="title">
+							<a style="color: white;font-weight: 300;">{{userName}}</a>
+						    </div>
+						    <div class="desc" style="color: white;">{{userEmail}}</div>
+						</div>
+						<div class="bottom">
+						    <button class="btn btn-warning btn-md" ng-show="!isWeb3" ng-click="signout()"> Logout </button>
+						</div>
+					</div>
+				    </div>
+				</div>
+			</div>
+		    </div>
+                </div>
+	</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fixed-bottom">
+    <div class="container">
+	<div class="row text-center">   
+		<ul class="menu list-inline">
+			<li><a href="/about">About</a></li>
+			<li><a href="/">Upload</a></li>
+			<li><a href="/download">Download</a></li>
+			<li><a href="/view">Browse</a></li>
+			<li ng-show="isLoggedIn"><a href="/manage">Manage</a></li>
+			<li><a href="/contact">Contact</a></li>
+			<li><a href="/terms">Terms of Service</a></li>
+		</ul>
+	</div>
+    </div>
+  </footer>
+  
+</body>
+
+</html>
+
