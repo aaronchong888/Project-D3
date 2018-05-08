@@ -57,6 +57,24 @@ The suggested modification is necessary for the online file sharing scenario bec
 
 <br>
 
+### Worker API endpoints
+
+> The source code used for worker nodes can be found at [Project-D3-Worker](https://github.com/aaronchong888/Project-D3-Worker)
+
+- [https://project-d3.xyz/api/v1](https://project-d3.xyz/)
+- [https://project-d3.azurewebsites.net/api/v1](https://project-d3.azurewebsites.net)
+- [https://projectd3.herokuapp.com/api/v1](https://projectd3.herokuapp.com)
+- [http://ec2-13-251-15-89.ap-southeast-1.compute.amazonaws.com/api/v1](http://ec2-13-251-15-89.ap-southeast-1.compute.amazonaws.com)
+- [http://project-d3-worker.193b.starter-ca-central-1.openshiftapps.com/api/v1](http://project-d3-worker.193b.starter-ca-central-1.openshiftapps.com)
+
+<br>
+
+> To work around the HTTPS-HTTP mixed content error, two proxy routes are provided for the HTTP endpoints:
+- `https://project-d3.xyz/proxy/worker2` for [http://ec2-13-251-15-89.ap-southeast-1.compute.amazonaws.com/api/v1](http://ec2-13-251-15-89.ap-southeast-1.compute.amazonaws.com)
+- `https://project-d3.xyz/proxy/worker3` for [http://project-d3-worker.193b.starter-ca-central-1.openshiftapps.com/api/v1](http://project-d3-worker.193b.starter-ca-central-1.openshiftapps.com)
+
+<br>
+
 ## Getting Started
 
 ### Prerequisites
