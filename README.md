@@ -90,10 +90,6 @@ Check `app.js` and complete the missing parts (*API Keys*, *RSA key pairs*, *SSL
 npm start
 ```
 
-## Built With
-
-*- To be updated -*
-
 ## Authors
 
 * **Aaron Chong** - *Initial work* - [aaronchong888](https://github.com/aaronchong888)
@@ -103,3 +99,7 @@ See also the list of [contributors](https://github.com/aaronchong888/Project-D3/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Acknowledgments
+
+This project is built using the following packages and libraries as listed [here](https://github.com/aaronchong888/Project-D3/network/dependencies)

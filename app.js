@@ -140,12 +140,14 @@ var ssl_options = {
 	ca: fs.readFileSync('cert/chain.pem')
 };
 
+var cors = require('cors');
 var app = express();
 app.use(forceSSL);
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
+app.use(cors());
 
 // Routes
 app.get('/', function(req, res) {
