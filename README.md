@@ -1,8 +1,6 @@
 # Project-D3
 
-<a href="https://d3faexd4dzuyve.cloudfront.net/"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3_icon_blk.png" align="left" height="30" width="30"></a>
-
-Decentralized Data Distribution with Ethereum &amp; IPFS
+<p align="center">Decentralized Data Distribution with Ethereum &amp; IPFS</p>
 
 <p align="center"><a href="https://d3faexd4dzuyve.cloudfront.net/"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3-home.png" width="60%"></a></p>
 
