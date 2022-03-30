@@ -1,8 +1,12 @@
 # Project-D3
 
-<a href="https://project-d3.xyz"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3_icon_blk.png" align="left" height="30" width="30"></a>
+<a href="https://d3faexd4dzuyve.cloudfront.net/"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3_icon_blk.png" align="left" height="30" width="30"></a>
 
 Decentralized Data Distribution with Ethereum &amp; IPFS
+
+<p align="center"><a href="https://d3faexd4dzuyve.cloudfront.net/"><img alt="" src="https://github.com/aaronchong888/Project-D3/blob/master/img/d3-home.png" width="60%"></a></p>
+
+<p align="center"><a href="https://d3faexd4dzuyve.cloudfront.net/">https://d3faexd4dzuyve.cloudfront.net/</a></p>
 
 <br> 
 
@@ -10,7 +14,7 @@ Decentralized Data Distribution with Ethereum &amp; IPFS
 
 This project aims to present a new data distribution model that focuses on preserving data privacy and ownership in a decentralized manner. Trust points in the network are replaced by introducing independent worker nodes to provide simple decryption services with respect to the access control rules on the blockchain.
 
-The online file sharing platform - [D3](https://project-d3.xyz) was built with [Ethereum](https://www.ethereum.org/) and [IPFS](https://ipfs.io/). It aims to provide a better data exchange model with the decentralization benefits of a blockchain system. In addition, D3 offers a solution for practical blockchain application usage by enabling traditional web users to seamlessly migrate to the new platform.
+The online file sharing platform - [D3](https://d3faexd4dzuyve.cloudfront.net/) was built with [Ethereum](https://www.ethereum.org/) and [IPFS](https://ipfs.io/). It aims to provide a better data exchange model with the decentralization benefits of a blockchain system. In addition, D3 offers a solution for practical blockchain application usage by enabling traditional web users to seamlessly migrate to the new platform.
 
 ### Overview
 
